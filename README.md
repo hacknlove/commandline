@@ -1,1 +1,1 @@
-meteor run --settings=setting.sample.json
+```meteor run --settings=setting.sample.json```
