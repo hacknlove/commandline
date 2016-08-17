@@ -1,0 +1,31 @@
+<head>
+  <title>hacknlove</title>
+</head>
+
+<body>
+  {{> lines}}
+  {{mobile}}
+  {{>command}}
+</body>
+
+<template name="lines">
+  {{#each line}}
+    <pre>{{{this.text}}}</pre>
+  {{/each}}
+</template>
+
+<template name="command">
+  {{#if mobile}}
+  <div class="commandMobile">
+    <pre>{{hora}}-{{user}}@{{server}}:{{env 'CWD'}}$ </pre>
+   {{>currentMobile}}
+  </div>
+  {{else}}
+  <pre>{{hora}}-{{user}}@{{server}}:{{env 'CWD'}}$ {{>current}}</pre>
+  {{/if}}
+</template>
+
+<template name="current"><input type="text" class="hide"><span>{{pre}}<span class="cursor insert" tabindex="1">{{cursor}}</span>{{post}}</span></template>
+<template name="currentMobile">
+  <input type="text">
+</template>

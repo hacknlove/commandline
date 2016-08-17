@@ -1,0 +1,62 @@
+/* CSS declarations go here */
+body{
+  background: #222;
+  color: #ddd;
+  font-family: monospace;
+}
+.cursor{
+  border: 1px solid #d22;
+  background: #2dd;
+  color: #d22;
+}
+
+input:focus+span>.cursor{
+  border: 0;
+  background: #d22;
+  color: #2dd;
+}
+.cursor.insert{
+  border: 1px solid #ddd;
+  background: #222;
+  color: #ddd;
+}
+
+input:focus+span>.cursor{
+  border: 0;
+  background: #ddd;
+  color: #222;
+}
+pre{
+  margin: 0;
+  white-space: pre-wrap;
+}
+input.hide {
+  position: fixed;
+  top: -100%;
+}
+input {
+  background: #222;
+  color: #ddd;
+  font-family: monospace;
+  border: 0;
+  flex-grow: 1;
+}
+input:focus, input:active{
+  outline: 0;
+}
+.commandMobile{
+  display: flex;
+}
+textarea{
+  margin: 0px;
+  background: #222;
+  color: #ddd;
+  width: 100%;
+  border: 0;
+  height: 80vh;
+  resize: none;
+  border: 1px solid #ddd;
+}
+textarea:focus, textarea:active{
+  outline: 0;
+}

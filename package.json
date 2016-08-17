@@ -1,0 +1,11 @@
+{
+  "name": "hacknlove",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "meteor-node-stubs": "~0.2.0",
+    "minimist": "^1.2.0"
+  }
+}
