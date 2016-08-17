@@ -1,0 +1,11 @@
+{
+  "public": {
+    "servername": "example.com"
+  },
+  "private": {
+    "mailgun": {
+      "auth": "api:key-yourapikey",
+      "url": "https://api.mailgun.net/v3/example.com"
+    }
+  }
+}
