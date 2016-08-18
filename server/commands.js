@@ -5,7 +5,7 @@ import { Match } from 'meteor/check'
 // import { check } from 'meteor/check'
 
 var onlyAdmin = function () {
-  if (!Meteor.user().services.hacknlove.admin) {
+  if (!Meteor.user() || !Meteor.user().services.hacknlove.admin) {
     throw new Meteor.Error('Not allowed', 'you are not root')
   }
 }
