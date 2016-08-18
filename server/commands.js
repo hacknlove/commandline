@@ -114,22 +114,24 @@ Meteor.methods({
   'command-delete': function (params, CWD) {
     onlyAdmin()
     var args = minimist(params.split(' '), {alias: {r: 'recursive'}})
-    params = args._[0] || ''
 
-    if (!params.match(/^[a-zA-Z0-9_\-\/]*$/)) {
-      return {lines: [
-        'char not allowed',
-        'only alfanumeric, dash and underscore'
-      ]}
+    if (args._[0]) {
+      if (!args._[0].match(/^[a-zA-Z0-9_\-\/]*$/)) {
+        return {lines: [
+          'char not allowed',
+          'only alfanumeric, dash and underscore'
+        ]}
+      }
+      if (CWD === '/') {
+        CWD = ''
+      }
+      CWD = CWD + '/' + args._[0]
     }
 
-    if (CWD === '/') {
-      CWD = ''
-    }
-    CWD = CWD + '/' + args._[0]
     if (CWD === '/') {
       return {lines: ['Root cannot be removed']}
     }
+
     if (args.recursive) {
       console.log({_id: {$regex: new RegExp('^' + CWD + '(/.+)?$')}})
       paths.remove({_id: {$regex: new RegExp('^' + CWD + '(/.+)?$')}})
