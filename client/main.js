@@ -1,8 +1,49 @@
-/* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $*/
+/* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $, Template*/
 var isMobile = function () {
   return 'ontouchstart' in document.documentElement
 }
+var enter = function (current) {
+  if (current.trim()) {
+    before.push(current)
+    if (after.length) {
+      after = []
+    }
+  }
+  var CWD = env.findOne({_id: 'CWD'}).value
 
+  current = current.trim()
+
+  if (current === '') {
+    return
+  }
+
+  current = current.match(/^([^ ]*) ?(.*)$/)
+
+  if (localMethods[current[1]]) {
+    var response = localMethods[current[1]](current[2], CWD) || {}
+    response.lines = response.lines || []
+    response.lines.forEach(function (line) {
+      lines.insert({text: line})
+    })
+    return
+  }
+  Meteor.call('command-' + current[1], current[2], CWD, function (error, response) {
+    if (error) {
+      console.log(error)
+      if (error.error === 404) {
+        lines.insert({text: current[1] + ' not found'})
+        return
+      }
+      lines.insert({text: error.message})
+      lines.insert({text: error.details})
+      return
+    }
+    response.lines = response.lines || []
+    response.lines.forEach(function (line) {
+      lines.insert({text: line})
+    })
+  })
+}
 Template.lines.helpers({
   line: function () {
     return lines.find()
@@ -11,6 +52,20 @@ Template.lines.helpers({
 Template.lines.events({
   'blur textarea': function () {
     $('input').attr('tabindex', -1).focus().click()
+  },
+  'click span.command': function (event, instance) {
+    var current = event.currentTarget.innerHTML
+
+    var hora = env.findOne({_id: 'time'}).value
+    var user = (Meteor.user() || {services: {hacknlove: {user: 'guest'}}}).services.hacknlove.user
+    var server = Meteor.settings.public.servername
+    var CWD = env.findOne({_id: 'CWD'}).value
+
+    lines.insert({text: hora + '-' + user + '@' + server + ':' + CWD + '$ ' + current})
+    enter(current)
+    $('input').val('')
+    env.update({_id: 'current'}, {$set: {value: ''}})
+    env.update({_id: 'pos'}, {$set: {value: 0}})
   }
 })
 
@@ -96,51 +151,9 @@ Template.currentMobile.events({
         }
         break
       case 'Enter':
-        if (current.trim()) {
-          before.push(current)
-          if (after.length) {
-            after = []
-          }
-        }
-        var CWD = env.findOne({_id: 'CWD'}).value
-
         lines.insert({text: template.$('input').parent().find('pre').text() + current})
-
-        current = current.trim()
-
-        env.update({_id: 'time'}, {$set: {value: (new Date() + '').match(/..:..:../)[0]}})
-
-        if (current === '') {
-          return
-        }
+        enter(current)
         template.$('input').val('')
-
-        current = current.match(/^([^ ]*) ?(.*)$/)
-
-        if (localMethods[current[1]]) {
-          var response = localMethods[current[1]](current[2], CWD) || {}
-          response.lines = response.lines || []
-          response.lines.forEach(function (line) {
-            lines.insert({text: line})
-          })
-          return
-        }
-        Meteor.call('command-' + current[1], current[2], CWD, function (error, response) {
-          if (error) {
-            console.log(error)
-            if (error.error === 404) {
-              lines.insert({text: current[1] + ' not found'})
-              return
-            }
-            lines.insert({text: error.message})
-            lines.insert({text: error.details})
-            return
-          }
-          response.lines = response.lines || []
-          response.lines.forEach(function (line) {
-            lines.insert({text: line})
-          })
-        })
     }
   }
 })
@@ -216,49 +229,10 @@ Template.current.events({
         template.$('.cursor').toggleClass('insert')
         break
       case 'Enter':
-        if (current.trim()) {
-          before.push(current)
-          if (after.length) {
-            after = []
-          }
-        }
-        var CWD = env.findOne({_id: 'CWD'}).value
-
-        current = current.trim()
         lines.insert({text: template.$('.cursor').parent().parent().text()})
-
-        if (current === '') {
-          return
-        }
-
+        enter(current)
         env.update({_id: 'current'}, {$set: {value: ''}})
         env.update({_id: 'pos'}, {$set: {value: 0}})
-        current = current.match(/^([^ ]*) ?(.*)$/)
-
-        if (localMethods[current[1]]) {
-          var response = localMethods[current[1]](current[2], CWD) || {}
-          response.lines = response.lines || []
-          response.lines.forEach(function (line) {
-            lines.insert({text: line})
-          })
-          return
-        }
-        Meteor.call('command-' + current[1], current[2], CWD, function (error, response) {
-          if (error) {
-            console.log(error)
-            if (error.error === 404) {
-              lines.insert({text: current[1] + ' not found'})
-              return
-            }
-            lines.insert({text: error.message})
-            lines.insert({text: error.details})
-            return
-          }
-          response.lines = response.lines || []
-          response.lines.forEach(function (line) {
-            lines.insert({text: line})
-          })
-        })
     }
   }
 })
