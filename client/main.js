@@ -1,4 +1,4 @@
-/* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $, Template*/
+/* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $, Template, Tracker*/
 var isMobile = function () {
   return 'ontouchstart' in document.documentElement
 }
@@ -63,6 +63,20 @@ Template.lines.events({
 
     lines.insert({text: hora + '-' + user + '@' + server + ':' + CWD + '$ ' + current})
     enter(current)
+    $('input').val('')
+    env.update({_id: 'current'}, {$set: {value: ''}})
+    env.update({_id: 'pos'}, {$set: {value: 0}})
+  },
+  'click span.goto': function (event, instance) {
+    var current = event.currentTarget.innerHTML
+
+    var hora = env.findOne({_id: 'time'}).value
+    var user = (Meteor.user() || {services: {hacknlove: {user: 'guest'}}}).services.hacknlove.user
+    var server = Meteor.settings.public.servername
+    var CWD = env.findOne({_id: 'CWD'}).value
+
+    lines.insert({text: hora + '-' + user + '@' + server + ':' + CWD + '$ goto ' + current})
+    enter('goto ' + current)
     $('input').val('')
     env.update({_id: 'current'}, {$set: {value: ''}})
     env.update({_id: 'pos'}, {$set: {value: 0}})

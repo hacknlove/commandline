@@ -68,3 +68,9 @@ span.command {
   font-weight: bolder;
   text-decoration: underline;
 }
+
+span.goto {
+  cursor: pointer;
+  font-weight: bolder;
+  font-style: italic;
+}

@@ -142,7 +142,7 @@ localMethods.list = function (params, CWD) {
     endregex = '/[^\/]+$'
   }
   ls = paths.find({_id: {$regex: new RegExp('^' + CWD + endregex)}}, {fields: {_id: 1}}).map(function (path) {
-    return path._id.replace(new RegExp('^' + CWD + '/'), '')
+    return '<span class="goto">' + path._id + '</span>'
   })
   return {lines: [ls.join(' ')]}
 }
