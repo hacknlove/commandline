@@ -88,19 +88,32 @@ localMethods.cancel = function (params, CWD) {
   $('textarea').remove()
 }
 
+localMethods.follow = function (params) {
+  params = params.trim()
+  var line = lines.findOne({text: {$regex: new RegExp('> *' + params + ' *</a>')}})
+  if (!line) {
+    return {lines: ['Link not found']}
+  }
+  var a = line.text.match(new RegExp('<a([^>]*)> *' + params + ' *<'))
+  if (!a[1]) {
+    return {lines: ['Link not found']}
+  }
+  a = a[1].match(/href *= *("[^""]*")/)
+  $('a[href=' + a[1] + ']')[0].click()
+}
 localMethods.help = function (params) {
   if (Meteor.user()) {
     return {lines: [
       'Commands availables:',
-      'cancel, clean, contact, copy, create, download, edit, goto, help, list, login, logout, move, register, reload, save, send, up',
-      '',
+      'cancel, clean, contact, copy, create, download, edit, follow, goto, help, list, login, logout, move, register, reload, save, send, up',
+      ''
       //    '<strong>help command</strong> shows the help of the command'
     ]}
   }
   return {lines: [
     'Commands availables:',
-    'cancel, clean, contact, goto, help, list, login, register, reload, send, up',
-    '',
+    'cancel, clean, contact, follow, goto, help, list, login, register, reload, send, up',
+    ''
     //    '<strong>help command</strong> shows the help of the command'
   ]}
 }
