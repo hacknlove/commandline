@@ -18,7 +18,7 @@
   {{#if mobile}}
   <div class="commandMobile">
     <pre>{{hora}}-{{user}}@{{server}}:{{env 'CWD'}}$ </pre>
-   {{>currentMobile}}
+   {{>currentMobile}}x
   </div>
   {{else}}
   <pre>{{hora}}-{{user}}@{{server}}:{{env 'CWD'}}$ {{>current}}</pre>
@@ -27,5 +27,5 @@
 
 <template name="current"><input type="text" class="hide"><span>{{pre}}<span class="cursor insert" tabindex="1">{{cursor}}</span>{{post}}</span></template>
 <template name="currentMobile">
-  <input type="text">
+  x<input type="text">x
 </template>
