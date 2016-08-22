@@ -1,6 +1,6 @@
 /* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $, Template, Tracker*/
 var isMobile = function () {
-  return 'ontouchstart' in document.documentElement
+  return 'ontouchstart' in document.documentElement || true
 }
 var enter = function (current) {
   if (current.trim()) {
@@ -135,40 +135,13 @@ Template.currentMobile.events({
     }
   },
   'keyup input': function (event, template) {
-    if (event.key.length === 1) {
+    if (event.keyCode !== 13) {
       return
     }
     var current = template.$('input').val()
-    switch (event.key) {
-      case 'ArrowUp':
-        if (current) {
-          after.push(current)
-        }
-        if (before.length) {
-          current = before.pop()
-          template.$('input').val(current)
-        } else if (current) {
-          current = ''
-          template.$('input').val(current)
-        }
-        break
-      case 'ArrowDown':
-        if (current) {
-          before.push(current)
-        }
-        if (after.length) {
-          current = after.pop()
-          template.$('input').val(current)
-        } else if (current) {
-          current = ''
-          template.$('input').val(current)
-        }
-        break
-      case 'Enter':
-        lines.insert({text: template.$('input').parent().find('pre').text() + current})
-        enter(current)
-        template.$('input').val('')
-    }
+    lines.insert({text: template.$('input').parent().find('pre').text() + current})
+    enter(current)
+    template.$('input').val('')
   }
 })
 Template.current.onRendered(function () {
