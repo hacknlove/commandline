@@ -1,6 +1,6 @@
 /* global Template, Meteor, lines: true, env: true, before: true, after: true, localMethods, $, Template, Tracker*/
 var isMobile = function () {
-  return 'ontouchstart' in document.documentElement || true
+  return 'ontouchstart' in document.documentElement
 }
 var enter = function (current) {
   if (current.trim()) {
